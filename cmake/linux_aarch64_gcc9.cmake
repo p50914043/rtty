@@ -1,0 +1,28 @@
+
+set(CMAKE_C_COMPILER "/opt/aarch64/bin/aarch64-buildroot-linux-gnu-gcc")
+set(CMAKE_CXX_COMPILER "/opt/aarch64/bin/aarch64-buildroot-linux-gnu-g++")
+
+if (${CMAKE_BUILD_TYPE} MATCHES  "Debug")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
+set(CMAKE_C_FLAGS "-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64" CACHE STRING "Buildroot CFLAGS")
+set(CMAKE_CXX_FLAGS "-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64" CACHE STRING "Buildroot CXXFLAGS")
+set(CMAKE_EXE_LINKER_FLAGS "" CACHE STRING "Buildroot LDFLAGS for executables")
+set(CMAKE_SHARED_LINKER_FLAGS "" CACHE STRING "Buildroot LDFLAGS for shared libraries")
+set(CMAKE_MODULE_LINKER_FLAGS "" CACHE STRING "Buildroot LDFLAGS for module libraries")
+
+set(CMAKE_INSTALL_SO_NO_EXE 0)
+
+if (ENABLE_COLOR)
+  set(CXX_COMPILE_FLAGS "${CXX_COMPILE_FLAGS} -fdiagnostics-color=always")
+  set(C_COMPILE_FLAGS "${C_COMPILE_FLAGS} -fdiagnostics-color=always")
+endif()
+
+set(CXX_COMPILE_FLAGS_THIRD_PARTY "")
+set(C_COMPILE_FLAGS_THIRD_PARTY "")
+
+set(C_CXX_LINKER_FLAGS_THIRD_PARTY "")

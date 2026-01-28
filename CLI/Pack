@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+base_dir=$(dirname "$0")/..
+cd $base_dir
+
+# 如果不存在build目录
+if [ -d pack_dir ]; then
+    rm -rf  pack_dir
+fi
+mkdir pack_dir
+cd pack_dir 
+cmake ../package
+
+cpack -G DEB --vervose

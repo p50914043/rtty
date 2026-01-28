@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# This script builds the project using a specified build tool.
+

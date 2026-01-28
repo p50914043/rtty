@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.10)
+project(rtty VERSION 1.0 LANGUAGES C)
+
+# 配置 - 确保所有 CPack 相关变量都在 include(CPack) 之后设置
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+# 启用 CPack
+include(CPack)
+
+set(CPACK_PACKAGE_CONTACT "panchangyuan@zhito.com")
+set(CPACK_PACKAGE_VENDOR "ZhiTO")
+set(CPACK_GENERATOR "DEB")
+set(CPACK_PACKAGE_FILE_NAME "rtty-h2pu_${CPACK_PACKAGE_VERSION}_arm64")
+
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "panchangyuan")
+set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "rtty - remote tty utility for H2PU")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.14)")
+set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "arm64")
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../build/aarch64/bin DESTINATION /usr/local/)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../thirdparty/ev_aarch64/lib DESTINATION /usr/local/)
+
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
+    "${CMAKE_CURRENT_SOURCE_DIR}/preinst;${CMAKE_CURRENT_SOURCE_DIR}/postinst")

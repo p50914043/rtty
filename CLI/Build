@@ -1,0 +1,64 @@
+#!/bin/bash
+
+base_dir=$(dirname "$0")/..
+cd $base_dir
+
+if [ -d build ]; then
+    rm -rf build
+fi
+mkdir build
+cd build
+
+CMAKE_TOOLCHAIN=0   #0 is linux,1 is qnx
+build_type="Release"
+install_folder=""
+install_prefix=""
+arguments=$@
+
+Usage()
+{
+    echo "Usage: ./CLI/Build [option]"
+    echo "Options:"
+    echo " --lx             编译Linux X86 gcc7版本(默认)"
+    echo " --la9            编译Linux Aarch64 gcc9版本"
+    echo " --la7            编译Linux Aarch64 gcc7版本(h2pu)"
+    echo " --qa             编译QNX Aarch64 gcc5版本"
+    echo " --debug          编译debug版本"
+    echo " --relwithdebinfo 编译带debug信息的realse版本"
+    echo " 示例： ./CLI/Build --lx --debug"
+}
+toolchain_file="../cmake/linux_x86_64_gcc7.cmake"
+
+while [ $# -gt 0 ] # 获取参数个数，判断是否大于0
+do
+  argument="$1"
+  case $argument in
+    --lx) # linux x86
+    CMAKE_TOOLCHAIN=0
+    shift
+    ;;
+    --la) #linux aarch64 gcc9
+    # export PATH=/opt/aarch64/bin/:$PATH
+    CMAKE_TOOLCHAIN=1
+    shift
+    ;;
+    --debug)
+    build_type="Debug"
+    shift
+    ;;
+    *)
+    Usage
+    exit 1
+    ;;
+  esac
+done
+cmake 
+
+
+if [ $CMAKE_TOOLCHAIN -eq 0 ];then
+    cmake  -DCMAKE_INSTALL_PREFIX=./x86  -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_TOOLCHAIN_FILE=$toolchain_file  .. #-DCMAKE_C_FLAGS="-g -O0 -fstack-protector-all"  .. 
+elif [ $CMAKE_TOOLCHAIN -eq 1 ];then
+    cmake  -DCMAKE_INSTALL_PREFIX=./aarch64  -DCMAKE_BUILD_TYPE=$build_type  -DCMAKE_TOOLCHAIN_FILE=$toolchain_file .. #-DCMAKE_C_FLAGS="-g -O0 -fstack-protector-all" ..
+fi
+
+make install  -j$(nproc) 
