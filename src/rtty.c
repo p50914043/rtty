@@ -770,6 +770,8 @@ int rtty_start(struct rtty *rtty)
 {
     rtty_run_state(RTTY_STATE_DISCONNECTED);
 
+    buffer_init(&rtty->rb, 0);
+    buffer_init(&rtty->wb, 0);
     ev_init(&rtty->tmr, rtty_timer_cb);
 
     INIT_LIST_HEAD(&rtty->ttys);
