@@ -23,10 +23,13 @@ aux_source_directory(buffer SRCS)
 add_executable(rtty ${SRCS})
 target_compile_definitions(rtty PRIVATE _GNU_SOURCE)
 target_compile_options(rtty PRIVATE -O -Wall -Werror --std=gnu99)
-target_include_directories(rtty PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/buffer ${LIBEV_INCLUDE_DIR}
+target_include_directories(rtty PRIVATE 
+${CMAKE_CURRENT_BINARY_DIR} 
+${CMAKE_CURRENT_SOURCE_DIR}/buffer 
+${LIBEV_INCLUDE_DIR}
 )
 target_link_libraries(rtty PRIVATE ${LIBEV_LIBRARY} util 
-${PROJECT_SOURCE_DIR}/thirdparty/ev_aarch64/lib/libcrypt.a 
+${PROJECT_SOURCE_DIR}/thirdparty/ev_aarch64/lib/libcrypt.a pthread dl
 m
 )
 
