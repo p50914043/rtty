@@ -1,28 +1,33 @@
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR aarch64)
+ 
+set(target_arch aarch64-linux-gnu)
+set(CMAKE_LIBRARY_ARCHITECTURE ${target_arch} CACHE STRING "" FORCE)
 
-set(CMAKE_C_COMPILER "/opt/aarch64/bin/aarch64-buildroot-linux-gnu-gcc")
-set(CMAKE_CXX_COMPILER "/opt/aarch64/bin/aarch64-buildroot-linux-gnu-g++")
+set(TARGET_ROOTFS /host/rootfs/)
+set(TOOLCHAIN_PATH /usr/bin)
 
-if (${CMAKE_BUILD_TYPE} MATCHES  "Debug")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os")
-endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+# Configure cmake to look for libraries, include directories and
+# packages inside the target root prefix.
+# set(CMAKE_FIND_ROOT_PATH ${TARGET_ROOTFS})
+# set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+# set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+# set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
-set(CMAKE_C_FLAGS "-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64" CACHE STRING "Buildroot CFLAGS")
-set(CMAKE_CXX_FLAGS "-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64" CACHE STRING "Buildroot CXXFLAGS")
-set(CMAKE_EXE_LINKER_FLAGS "" CACHE STRING "Buildroot LDFLAGS for executables")
-set(CMAKE_SHARED_LINKER_FLAGS "" CACHE STRING "Buildroot LDFLAGS for shared libraries")
-set(CMAKE_MODULE_LINKER_FLAGS "" CACHE STRING "Buildroot LDFLAGS for module libraries")
+# compiler/linker flags
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --sysroot=${TARGET_ROOTFS}" CACHE INTERNAL "" FORCE)
+set(CMAKE_C_LINK_FLAGS "${CMAKE_C_LINK_FLAGS} --sysroot=${TARGET_ROOTFS}" CACHE INTERNAL "" FORCE)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --sysroot=${TARGET_ROOTFS}" CACHE INTERNAL "" FORCE)
+set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} --sysroot=${TARGET_ROOTFS}" CACHE INTERNAL "" FORCE)
 
-set(CMAKE_INSTALL_SO_NO_EXE 0)
-
-if (ENABLE_COLOR)
-  set(CXX_COMPILE_FLAGS "${CXX_COMPILE_FLAGS} -fdiagnostics-color=always")
-  set(C_COMPILE_FLAGS "${C_COMPILE_FLAGS} -fdiagnostics-color=always")
-endif()
-
-set(CXX_COMPILE_FLAGS_THIRD_PARTY "")
-set(C_COMPILE_FLAGS_THIRD_PARTY "")
-
-set(C_CXX_LINKER_FLAGS_THIRD_PARTY "")
+# specify the toolchain programs
+set(CMAKE_C_COMPILER ${TOOLCHAIN_PATH}/aarch64-linux-gnu-gcc)
+set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PATH}/aarch64-linux-gnu-g++)
+ 
+# Not all shared libraries dependencies are instaled in host machine.
+# Make sure linker doesn't complain.
+set(CMAKE_EXE_LINKER_FLAGS_INIT -Wl,--allow-shlib-undefined)
+ 
+# instruct nvcc to use our cross-compiler
+set(CMAKE_CUDA_FLAGS "-ccbin ${CMAKE_CXX_COMPILER} -Xcompiler -fPIC" CACHE STRING "" FORCE)

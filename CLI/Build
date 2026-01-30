@@ -40,6 +40,8 @@ do
     --la) #linux aarch64 gcc9
     # export PATH=/opt/aarch64/bin/:$PATH
     CMAKE_TOOLCHAIN=1
+    toolchain_file="../cmake/linux_aarch64_gcc9.cmake"
+    echo "linux aarch64 gcc9"
     shift
     ;;
     --debug)
@@ -52,13 +54,13 @@ do
     ;;
   esac
 done
-cmake 
 
 
 if [ $CMAKE_TOOLCHAIN -eq 0 ];then
     cmake  -DCMAKE_INSTALL_PREFIX=./x86  -DCMAKE_BUILD_TYPE=$build_type -DCMAKE_TOOLCHAIN_FILE=$toolchain_file  .. #-DCMAKE_C_FLAGS="-g -O0 -fstack-protector-all"  .. 
 elif [ $CMAKE_TOOLCHAIN -eq 1 ];then
-    cmake  -DCMAKE_INSTALL_PREFIX=./aarch64  -DCMAKE_BUILD_TYPE=$build_type  -DCMAKE_TOOLCHAIN_FILE=$toolchain_file .. #-DCMAKE_C_FLAGS="-g -O0 -fstack-protector-all" ..
+    echo $toolchain_file
+    cmake -DCMAKE_PREFIX_PATH=${base_dir}/thirdparty/ev_aarch64/lib -DCMAKE_INSTALL_PREFIX=./aarch64  -DCMAKE_BUILD_TYPE=$build_type  -DCMAKE_TOOLCHAIN_FILE=$toolchain_file .. #-DCMAKE_C_FLAGS="-g -O0 -fstack-protector-all" ..
 fi
 
 make install  -j$(nproc) 
