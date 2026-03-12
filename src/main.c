@@ -173,9 +173,9 @@ int main(int argc, char **argv)
                 log_warn("Heartbeat interval too short, set to 5s\n");
             }
 
-            if (rtty.heartbeat > 255) {
-                rtty.heartbeat = 255;
-                log_warn("Heartbeat interval too long, set to 255s\n");
+            if (rtty.heartbeat > 100001) {
+                rtty.heartbeat = 100000;
+                log_warn("Heartbeat interval too long, set to 100000s\n");
             }
             break;
         case 'h':

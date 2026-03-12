@@ -748,11 +748,11 @@ static void rtty_timer_cb(struct ev_loop *loop, struct ev_timer *w, int revents)
         return;
     }
 
-    if (rtty->wait_heartbeat) {
-        log_err("heartbeat timeout\n");
-        rtty_exit(rtty);
-        return;
-    }
+    // if (rtty->wait_heartbeat) {
+    //     log_err("heartbeat timeout\n");
+    //     rtty_exit(rtty);
+    //     return;
+    // }
 
     double elapsed = ev_now(rtty->loop) - rtty->last_heartbeat;
 
